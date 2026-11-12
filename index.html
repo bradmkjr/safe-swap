@@ -335,7 +335,7 @@
         .hero { grid-template-columns: 1fr; gap: 0; padding: 47px 0 35px; }
         h1 { font-size: clamp(43px, 11vw, 62px); }
         .hero-copy { font-size: 14px; }
-        .hero-art { position: absolute; right: -65px; bottom: -82px; min-height: 200px; opacity: .21; pointer-events: none; }
+        .hero-art { display: none; }
         .plate { width: 195px; height: 195px; }
         .plate-center { width: 130px; height: 130px; }
         .floating-note, .spark { display: none; }
@@ -457,7 +457,7 @@
       const ingredients = [
         {
           id: "milk", name: "Cow's milk", icon: "🥛", allergen: "Contains dairy",
-          units: { imperial: "cup", metric: "ml" }, initialAmount: 1,
+          units: { imperial: "cup", metric: "ml" }, metricPerImperial: 240, initialAmount: 1,
           alternatives: [
             { name: "Unsweetened oat drink", categories: ["sweet", "beverage"], ratio: { imperial: 1, metric: 1 }, note: "Mild, creamy, and easy to find.", pros: "Blends smoothly; neutral flavor.", cons: "Can be thinner in rich custards.", caution: "Some oat drinks contain gluten; check the label." },
             { name: "Unsweetened soy drink", categories: ["savory", "sweet", "beverage"], ratio: { imperial: 1, metric: 1 }, note: "A versatile, protein-rich stand-in.", pros: "Closest body for many sauces.", cons: "A faint bean note can come through.", caution: "Contains soy, a major allergen." },
@@ -467,7 +467,7 @@
         },
         {
           id: "butter", name: "Butter", icon: "🧈", allergen: "Contains dairy",
-          units: { imperial: "tbsp", metric: "g" }, initialAmount: 4,
+          units: { imperial: "tbsp", metric: "g" }, metricPerImperial: 14, initialAmount: 4,
           alternatives: [
             { name: "Plant-based butter sticks", categories: ["sweet", "savory"], ratio: { imperial: 1, metric: 1 }, note: "Choose a firm baking stick for cookies and pastry.", pros: "Closest behavior and richness.", cons: "Salt levels vary by brand.", caution: "Check for soy, pea protein, or other allergens on the label." },
             { name: "Neutral oil", categories: ["sweet", "savory"], ratio: { imperial: 0.75, metric: 0.75 }, note: "Use about ¾ as much; best in moist bakes and sautés.", pros: "Keeps cakes tender; dairy-free.", cons: "No buttery flavor; not ideal for creaming.", caution: "Check the specific oil and facility statement for the person's allergens." },
@@ -477,7 +477,7 @@
         },
         {
           id: "egg", name: "Eggs", icon: "🥚", allergen: "Contains egg",
-          units: { imperial: "each", metric: "each" }, initialAmount: 1,
+          units: { imperial: "each", metric: "each" }, metricPerImperial: 1, initialAmount: 1,
           alternatives: [
             { name: "Flax egg", categories: ["sweet", "savory"], note: "For each egg: mix 1 tbsp ground flaxseed with 3 tbsp water; rest until gelled.", prep: [
                 { imperialFactor: 1, metricFactor: 7, imperialUnit: "tbsp", metricUnit: "g", label: "ground flaxseed" },
@@ -486,12 +486,12 @@
             { name: "Unsweetened applesauce", categories: ["sweet"], note: "Use ¼ cup (60 ml) per egg in moist cakes and muffins.", prep: [
                 { imperialFactor: 0.25, metricFactor: 60, imperialUnit: "cup", metricUnit: "ml", label: "applesauce" }
               ], pros: "Adds moisture and gentle sweetness.", cons: "Can make bakes denser; not a crisp binder.", caution: "Check for added ingredients and shared-equipment notices." },
-            { name: "Commercial egg replacer", categories: ["sweet", "savory"], note: "Follow the package ratio; performance varies by recipe.", amountNote: "Use the package directions for this many eggs.", pros: "Often designed for baking structure.", cons: "Brand-specific and may include several ingredients.", caution: "Read the full ingredient and allergen statement every time." }
+            { name: "Commercial egg replacer", categories: ["sweet", "savory"], note: "Follow the package ratio; performance varies by recipe.", amountNote: "package directions", pros: "Often designed for baking structure.", cons: "Brand-specific and may include several ingredients.", caution: "Read the full ingredient and allergen statement every time." }
           ]
         },
         {
           id: "flour", name: "Wheat flour", icon: "🌾", allergen: "Contains wheat / gluten",
-          units: { imperial: "cup", metric: "g" }, initialAmount: 1,
+          units: { imperial: "cup", metric: "g" }, metricPerImperial: 125, initialAmount: 1,
           alternatives: [
             { name: "1:1 gluten-free flour blend", categories: ["sweet", "savory"], ratio: { imperial: 1, metric: 1 }, note: "Choose a blend labeled for 1:1 substitution; use its package guidance.", pros: "Designed to mimic all-purpose flour.", cons: "Texture and absorption vary between brands.", caution: "Look for a gluten-free claim and check for other allergens or cross-contact." },
             { name: "Oat flour", categories: ["sweet"], ratio: { imperial: 1, metric: 0.9 }, note: "A soft, hearty option for pancakes and quick breads.", pros: "Mild flavor; tender crumb.", cons: "Can be more crumbly than wheat flour.", caution: "Use oats specifically labeled gluten-free when needed; check cross-contact." },
@@ -501,7 +501,7 @@
         },
         {
           id: "soy-sauce", name: "Soy sauce", icon: "🫙", allergen: "Contains soy; often wheat",
-          units: { imperial: "tbsp", metric: "ml" }, initialAmount: 2,
+          units: { imperial: "tbsp", metric: "ml" }, metricPerImperial: 15, initialAmount: 2,
           alternatives: [
             { name: "Coconut aminos", categories: ["savory"], ratio: { imperial: 1, metric: 1 }, note: "Start 1:1, then adjust; usually milder and sweeter.", pros: "Savory, usually wheat-free.", cons: "Less salty; flavor is not identical.", caution: "Coconut can be an allergen for some people; check the label." },
             { name: "Wheat-free tamari", categories: ["savory"], ratio: { imperial: 1, metric: 1 }, note: "Use 1:1 for a close, savory flavor.", pros: "Rich umami; close to soy sauce.", cons: "Salt levels vary; not all tamari is wheat-free.", caution: "Usually contains soy. Verify both soy and wheat statements on the exact bottle." },
@@ -512,7 +512,7 @@
         },
         {
           id: "sugar", name: "Granulated sugar", icon: "🍚", allergen: "Check processing & packaging",
-          units: { imperial: "cup", metric: "ml" }, initialAmount: 1,
+          units: { imperial: "cup", metric: "ml" }, metricPerImperial: 240, initialAmount: 1,
           alternatives: [
             { name: "Maple syrup", categories: ["sweet", "beverage"], ratio: { imperial: 0.75, metric: 0.75 }, note: "Use ¾ as much; reduce other liquid by about ¼ cup per cup of sugar.", pros: "Adds a rounded caramel note.", cons: "Changes moisture and browning.", caution: "Choose pure maple syrup and check for added flavors or shared-equipment notes." },
             { name: "Date syrup", categories: ["sweet", "beverage"], ratio: { imperial: 0.75, metric: 0.75 }, note: "Start with ¾ as much and account for extra moisture.", pros: "Deep, fruity sweetness.", cons: "Darkens flavor and color.", caution: "Check the full label for added ingredients and cross-contact statements." },
@@ -521,7 +521,7 @@
         },
         {
           id: "peanut-butter", name: "Peanut butter", icon: "🥜", allergen: "Contains peanuts",
-          units: { imperial: "tbsp", metric: "g" }, initialAmount: 2,
+          units: { imperial: "tbsp", metric: "g" }, metricPerImperial: 16, initialAmount: 2,
           alternatives: [
             { name: "Sunflower seed butter", categories: ["sweet", "savory"], ratio: { imperial: 1, metric: 1 }, note: "Use 1:1 in sauces, spreads, and many cookies.", pros: "Creamy with a mild, toasty taste.", cons: "Can taste more earthy; may turn green with baking soda.", caution: "Check for seed allergies and shared equipment with peanuts or tree nuts." },
             { name: "Tahini", categories: ["savory"], ratio: { imperial: 1, metric: 1 }, note: "Use 1:1 in dressings, sauces, and dips.", pros: "Silky texture and savory depth.", cons: "Bitter edge may need balancing.", caution: "Contains sesame, a major allergen." },
@@ -530,7 +530,7 @@
         },
         {
           id: "cream", name: "Heavy cream", icon: "🍶", allergen: "Contains dairy",
-          units: { imperial: "cup", metric: "ml" }, initialAmount: 0.5,
+          units: { imperial: "cup", metric: "ml" }, metricPerImperial: 240, initialAmount: 0.5,
           alternatives: [
             { name: "Full-fat oat cooking cream", categories: ["savory", "sweet", "beverage"], ratio: { imperial: 1, metric: 1 }, note: "Choose an unsweetened cooking style for soups and sauces.", pros: "Creamy body with a mild flavor.", cons: "May not whip or reduce like dairy cream.", caution: "Some oat products contain gluten; check label and cross-contact." },
             { name: "Full-fat coconut milk", categories: ["savory", "sweet"], ratio: { imperial: 1, metric: 1 }, note: "Use the thick part for sauces and curries.", pros: "Rich texture and stable in simmered dishes.", cons: "Noticeable coconut flavor.", caution: "Coconut can be an allergen for some people; verify their specific needs." },
@@ -561,8 +561,16 @@
       }
 
       function pluralUnit(unit, value) {
-        if (unit === "g" || unit === "ml" || unit === "each") return unit;
+        if (["g", "ml", "each", "tbsp", "tsp", "oz"].includes(unit)) return unit;
         return Math.abs(value - 1) < 0.001 ? unit : `${unit}s`;
+      }
+
+      function sourceAmountLabel(ingredient, amount) {
+        if (ingredient.units[state.system] === "each") {
+          return `${amountText(amount)} ${Math.abs(amount - 1) < 0.001 ? "egg" : "eggs"}`;
+        }
+        const unit = ingredient.units[state.system];
+        return `${amountText(amount)} ${pluralUnit(unit, amount)} ${ingredient.name.toLowerCase()}`;
       }
 
       function renderIngredients() {
@@ -580,7 +588,7 @@
 
       function renderAmount(alt, ingredient, amount) {
         if (alt.amountNote) {
-          return `<div class="alt-amount">${escapeHTML(alt.amountNote.replace("this many", amountText(amount)))}<br><small>${escapeHTML(pluralUnit("each", amount))} ${escapeHTML(ingredient.name.toLowerCase())}</small></div>`;
+          return `<div class="alt-amount">Follow ${escapeHTML(alt.amountNote)}<br><small>for ${escapeHTML(sourceAmountLabel(ingredient, amount))}</small></div>`;
         }
         if (alt.prep) {
           const parts = alt.prep.map(part => {
@@ -589,7 +597,7 @@
             const value = amount * factor;
             return `${amountText(value)} ${pluralUnit(unit, value)} ${escapeHTML(part.label)}`;
           });
-          return `<div class="alt-amount">${parts.join(" + ")}<br><small>for ${amountText(amount)} ${pluralUnit("each", amount)} ${escapeHTML(ingredient.name.toLowerCase())}</small></div>`;
+          return `<div class="alt-amount">${parts.join(" + ")}<br><small>for ${escapeHTML(sourceAmountLabel(ingredient, amount))}</small></div>`;
         }
         const ratio = alt.ratio[state.system];
         const value = amount * ratio;
@@ -623,7 +631,7 @@
                 <div class="tradeoff cons"><b>Consider:</b><span>${escapeHTML(alt.cons)}</span></div>
               </div>
               <div class="allergen-note"><strong>Check:</strong><span>${escapeHTML(alt.caution)}</span></div>
-            </article>`).join("") : `<div class="no-results">No ${escapeHTML(state.recipe)} swaps in this starter set yet.</div>`;
+            </article>`).join("") : `<div class="no-results">No typical ${escapeHTML(state.recipe)} swaps are listed for this ingredient. Try another recipe style or choose a different ingredient.</div>`;
 
           return `<section class="swap-group" data-swap-group="${ingredient.id}">
             <div class="swap-group-head">
@@ -659,7 +667,17 @@
       document.querySelector(".measure-toggle").addEventListener("click", event => {
         const button = event.target.closest("[data-system]");
         if (!button) return;
-        state.system = button.dataset.system;
+        const nextSystem = button.dataset.system;
+        if (nextSystem !== state.system) {
+          ingredients.forEach(ingredient => {
+            const factor = ingredient.metricPerImperial;
+            const converted = nextSystem === "metric"
+              ? state.amounts[ingredient.id] * factor
+              : state.amounts[ingredient.id] / factor;
+            state.amounts[ingredient.id] = Number(converted.toFixed(2));
+          });
+          state.system = nextSystem;
+        }
         document.querySelectorAll("[data-system]").forEach(item => item.setAttribute("aria-pressed", String(item === button)));
         renderSwaps();
       });
