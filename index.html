@@ -1,0 +1,688 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f8f6ef">
+    <meta name="description" content="Find thoughtful ingredient swaps for the recipe and the person at your table.">
+    <title>Safe Swap — Thoughtful ingredient swaps</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --ink: #263d32;
+        --muted: #68786d;
+        --paper: #f8f6ef;
+        --white: #fffefa;
+        --line: #e6e5d9;
+        --leaf: #476b50;
+        --leaf-dark: #34543d;
+        --leaf-pale: #e8eee5;
+        --coral: #c85e43;
+        --coral-pale: #f8eae3;
+        --gold: #d7ad62;
+        --shadow: 0 18px 50px rgba(48, 65, 50, .07);
+        font-family: "Avenir Next", Avenir, "Segoe UI", sans-serif;
+        font-synthesis: none;
+        text-rendering: optimizeLegibility;
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        color: var(--ink);
+        background:
+          radial-gradient(ellipse at 87% 1%, rgba(226, 231, 207, .4), transparent 25rem),
+          var(--paper);
+      }
+
+      button, input { font: inherit; }
+      button { color: inherit; }
+      a { color: inherit; }
+
+      .shell { width: min(1160px, calc(100% - 48px)); margin: 0 auto; }
+
+      .topbar {
+        height: 82px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid rgba(64, 82, 65, .12);
+      }
+
+      .brand { display: flex; align-items: center; gap: 11px; text-decoration: none; }
+      .brand-mark {
+        width: 39px;
+        height: 39px;
+        display: grid;
+        place-items: center;
+        border-radius: 50% 50% 48% 12%;
+        background: var(--leaf);
+        color: white;
+        transform: rotate(-8deg);
+      }
+      .brand-mark svg { transform: rotate(8deg); }
+      .brand-name { font-family: Georgia, "Times New Roman", serif; font-size: 24px; letter-spacing: -.8px; }
+      .brand-name span { color: var(--coral); }
+      .top-note { color: var(--muted); font-size: 13px; letter-spacing: .02em; }
+
+      .hero {
+        position: relative;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 330px;
+        align-items: center;
+        gap: 72px;
+        padding: 66px 0 60px;
+        overflow: hidden;
+      }
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--leaf);
+        font-size: 11px;
+        font-weight: 750;
+        letter-spacing: .15em;
+        text-transform: uppercase;
+      }
+      .eyebrow::before { content: ""; width: 22px; height: 1px; background: var(--coral); }
+      h1, h2, h3, p { margin-top: 0; }
+      h1 {
+        max-width: 650px;
+        margin: 17px 0 17px;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: clamp(44px, 6vw, 68px);
+        font-weight: 400;
+        letter-spacing: -2.6px;
+        line-height: 1.02;
+      }
+      h1 em { color: var(--leaf); font-weight: 400; }
+      .hero-copy {
+        max-width: 570px;
+        margin-bottom: 0;
+        color: #647367;
+        font-size: 16px;
+        line-height: 1.75;
+      }
+      .hero-art {
+        position: relative;
+        display: grid;
+        place-items: center;
+        min-height: 238px;
+      }
+      .plate {
+        position: relative;
+        display: grid;
+        place-items: center;
+        width: 220px;
+        height: 220px;
+        border: 1px solid #e7e1d3;
+        border-radius: 50%;
+        background: linear-gradient(145deg, #fffefa, #f3efe3);
+        box-shadow: 0 13px 30px rgba(59, 70, 50, .08), inset 0 0 0 12px rgba(255,255,255,.55), inset 0 0 0 13px #ebe5d8;
+      }
+      .plate-center {
+        display: grid;
+        place-items: center;
+        width: 145px;
+        height: 145px;
+        border-radius: 50%;
+        background:
+          radial-gradient(ellipse at 35% 33%, #f5c87d 0 10%, transparent 11%),
+          radial-gradient(ellipse at 70% 66%, #bd6d46 0 12%, transparent 13%),
+          radial-gradient(ellipse at 61% 30%, #78915a 0 11%, transparent 12%),
+          radial-gradient(ellipse at 34% 72%, #d89c51 0 13%, transparent 14%),
+          radial-gradient(ellipse at 49% 49%, #6f8650 0 12%, transparent 13%),
+          #e5dfc9;
+        color: #fff;
+        font-family: Georgia, serif;
+        font-size: 16px;
+        text-shadow: 0 1px 5px rgba(36, 46, 31, .45);
+      }
+      .floating-note {
+        position: absolute;
+        right: 0;
+        bottom: 17px;
+        padding: 12px 15px;
+        border: 1px solid rgba(57, 78, 56, .09);
+        border-radius: 12px;
+        background: var(--white);
+        box-shadow: var(--shadow);
+        color: var(--leaf);
+        font-family: Georgia, serif;
+        font-size: 14px;
+        transform: rotate(3deg);
+      }
+      .floating-note small { display: block; margin-top: 3px; color: var(--muted); font-family: inherit; font-size: 10px; }
+      .spark { position: absolute; color: var(--coral); font-size: 19px; }
+      .spark.one { top: 21px; right: 35px; }
+      .spark.two { left: 5px; bottom: 40px; font-size: 13px; }
+
+      .tool {
+        margin-bottom: 70px;
+        border: 1px solid #e9e7dd;
+        border-radius: 18px;
+        background: rgba(255, 254, 250, .88);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+      .tool-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+        padding: 27px 32px 24px;
+        border-bottom: 1px solid var(--line);
+      }
+      .step-title { display: flex; align-items: center; gap: 13px; }
+      .step-number {
+        display: grid;
+        flex: 0 0 34px;
+        width: 34px;
+        height: 34px;
+        place-items: center;
+        border-radius: 50%;
+        background: var(--leaf-pale);
+        color: var(--leaf);
+        font-family: Georgia, serif;
+        font-size: 16px;
+      }
+      .step-title h2 { margin: 0; font-family: Georgia, serif; font-size: 22px; font-weight: 400; letter-spacing: -.4px; }
+      .step-title p { margin: 4px 0 0; color: var(--muted); font-size: 12px; }
+      .recipe-types { display: flex; padding: 4px; border: 1px solid var(--line); border-radius: 10px; background: #f7f6f0; }
+      .recipe-type {
+        padding: 9px 13px;
+        border: 0;
+        border-radius: 7px;
+        background: transparent;
+        color: var(--muted);
+        cursor: pointer;
+        font-size: 12px;
+        font-weight: 650;
+        transition: .18s ease;
+      }
+      .recipe-type[aria-pressed="true"] { background: var(--leaf); color: white; box-shadow: 0 2px 6px rgba(40,70,43,.16); }
+      .recipe-type:focus-visible, .ingredient-card:focus-visible, .measure-toggle button:focus-visible { outline: 3px solid #d6aa59; outline-offset: 3px; }
+
+      .picker-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+        padding: 22px 32px 13px;
+      }
+      .picker-label { color: #67766a; font-size: 12px; font-weight: 650; }
+      .search-wrap { position: relative; }
+      .search-wrap svg { position: absolute; top: 10px; left: 11px; color: #879287; }
+      .search {
+        width: 205px;
+        height: 36px;
+        padding: 0 12px 0 34px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #fffefa;
+        color: var(--ink);
+        font-size: 12px;
+        outline-color: var(--leaf);
+      }
+      .ingredient-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; padding: 0 32px 25px; }
+      .ingredient-card {
+        min-height: 84px;
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        padding: 13px;
+        border: 1px solid var(--line);
+        border-radius: 11px;
+        background: #fffefa;
+        text-align: left;
+        cursor: pointer;
+        transition: border-color .16s, background .16s, transform .16s;
+      }
+      .ingredient-card:hover { border-color: #bac8b6; transform: translateY(-1px); }
+      .ingredient-card[aria-pressed="true"] { border-color: #78937a; background: #f2f6ef; }
+      .ingredient-icon { display: grid; flex: 0 0 38px; width: 38px; height: 38px; place-items: center; border-radius: 11px; background: #f3efe4; font-size: 19px; }
+      .ingredient-card:nth-child(4n + 2) .ingredient-icon { background: #f8eee5; }
+      .ingredient-card:nth-child(4n + 3) .ingredient-icon { background: #edf2e8; }
+      .ingredient-card:nth-child(4n + 4) .ingredient-icon { background: #f5eee7; }
+      .ingredient-info { min-width: 0; flex: 1; }
+      .ingredient-name { display: block; overflow: hidden; color: var(--ink); font-size: 12px; font-weight: 700; text-overflow: ellipsis; white-space: nowrap; }
+      .ingredient-allergen { display: block; margin-top: 5px; color: #8a8377; font-size: 10px; }
+      .check {
+        display: grid;
+        flex: 0 0 18px;
+        width: 18px;
+        height: 18px;
+        place-items: center;
+        border: 1px solid #d8d9cf;
+        border-radius: 50%;
+        color: transparent;
+        font-size: 10px;
+      }
+      .ingredient-card[aria-pressed="true"] .check { border-color: var(--leaf); background: var(--leaf); color: white; }
+
+      .results {
+        padding: 27px 32px 34px;
+        border-top: 1px solid var(--line);
+        background: linear-gradient(180deg, #fbfaf6, #fffefa 120px);
+      }
+      .results-head { display: flex; align-items: center; justify-content: space-between; gap: 18px; margin-bottom: 20px; }
+      .results-heading { display: flex; align-items: center; gap: 13px; }
+      .results-heading .step-number { background: #f7e9e1; color: var(--coral); }
+      .results-heading h2 { margin: 0; font-family: Georgia, serif; font-size: 22px; font-weight: 400; }
+      .results-heading p { margin: 4px 0 0; color: var(--muted); font-size: 12px; }
+      .measure-control { display: flex; align-items: center; gap: 9px; color: var(--muted); font-size: 11px; }
+      .measure-toggle { display: flex; padding: 3px; border: 1px solid var(--line); border-radius: 8px; background: white; }
+      .measure-toggle button { padding: 7px 10px; border: 0; border-radius: 5px; background: transparent; color: var(--muted); cursor: pointer; font-size: 11px; }
+      .measure-toggle button[aria-pressed="true"] { background: var(--leaf-pale); color: var(--leaf-dark); font-weight: 700; }
+
+      .swap-list { display: grid; gap: 14px; }
+      .swap-group { padding: 18px; border: 1px solid #e9e8df; border-radius: 12px; background: white; }
+      .swap-group-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 15px; }
+      .swap-ingredient { display: flex; align-items: center; gap: 10px; }
+      .swap-ingredient .ingredient-icon { width: 34px; height: 34px; flex-basis: 34px; font-size: 17px; }
+      .swap-ingredient h3 { margin: 0; font-size: 14px; }
+      .swap-ingredient p { margin: 4px 0 0; color: var(--muted); font-size: 10px; }
+      .original-amount { display: flex; align-items: center; gap: 7px; color: var(--muted); font-size: 10px; }
+      .amount-input {
+        width: 62px;
+        height: 32px;
+        padding: 0 7px;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        background: #fffefa;
+        color: var(--ink);
+        text-align: center;
+        font-size: 12px;
+        outline-color: var(--leaf);
+      }
+      .amount-unit { color: var(--ink); font-size: 11px; font-weight: 650; }
+      .alt-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+      .alt-card { min-width: 0; padding: 14px; border: 1px solid #edede6; border-radius: 9px; background: #fdfcf8; }
+      .alt-card.best { border-color: #c6d3c1; background: #f5f8f2; }
+      .alt-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+      .alt-card h4 { margin: 0; font-size: 12px; line-height: 1.4; }
+      .fit-tag { flex: 0 0 auto; padding: 4px 6px; border-radius: 5px; background: var(--leaf-pale); color: var(--leaf-dark); font-size: 8px; font-weight: 750; letter-spacing: .03em; text-transform: uppercase; }
+      .alt-amount { margin: 12px 0 11px; color: var(--leaf-dark); font-family: Georgia, serif; font-size: 16px; }
+      .alt-amount small { color: var(--muted); font-family: "Avenir Next", Avenir, sans-serif; font-size: 10px; }
+      .alt-note { min-height: 30px; margin: 0 0 11px; color: #67766a; font-size: 10px; line-height: 1.5; }
+      .tradeoffs { display: grid; gap: 6px; padding-top: 10px; border-top: 1px solid #ebebe3; }
+      .tradeoff { display: flex; gap: 6px; color: #657369; font-size: 9px; line-height: 1.45; }
+      .tradeoff b { flex: 0 0 auto; color: var(--leaf); font-size: 9px; }
+      .tradeoff.cons b { color: var(--coral); }
+      .allergen-note { display: flex; gap: 7px; margin-top: 10px; padding: 8px; border-radius: 6px; background: #fcf1e7; color: #805c37; font-size: 9px; line-height: 1.45; }
+      .allergen-note strong { flex: 0 0 auto; }
+      .no-results { padding: 24px; border: 1px dashed #d8ddcf; border-radius: 10px; color: var(--muted); text-align: center; font-size: 13px; }
+
+      .how-it-works { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; padding: 0 2px 66px; }
+      .how-item { display: flex; gap: 13px; }
+      .how-number { color: var(--coral); font-family: Georgia, serif; font-size: 20px; }
+      .how-item h3 { margin: 2px 0 6px; font-family: Georgia, serif; font-size: 16px; font-weight: 400; }
+      .how-item p { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.6; }
+
+      footer { border-top: 1px solid rgba(64, 82, 65, .13); background: #f1efe6; }
+      .footer-inner { display: flex; align-items: flex-start; justify-content: space-between; gap: 30px; padding: 27px 0 30px; }
+      .footer-brand { font-family: Georgia, serif; font-size: 17px; }
+      .footer-brand span { color: var(--coral); }
+      .disclaimer { max-width: 735px; margin: 0; color: #73796e; font-size: 10px; line-height: 1.7; }
+      .disclaimer strong { color: #58665a; }
+      .footer-credit { flex: 0 0 auto; color: #8b8b7f; font-size: 10px; }
+
+      @media (max-width: 760px) {
+        .shell { width: min(100% - 32px, 590px); }
+        .topbar { height: 68px; }
+        .top-note { max-width: 145px; text-align: right; font-size: 11px; }
+        .hero { grid-template-columns: 1fr; gap: 0; padding: 47px 0 35px; }
+        h1 { font-size: clamp(43px, 11vw, 62px); }
+        .hero-copy { font-size: 14px; }
+        .hero-art { position: absolute; right: -65px; bottom: -82px; min-height: 200px; opacity: .21; pointer-events: none; }
+        .plate { width: 195px; height: 195px; }
+        .plate-center { width: 130px; height: 130px; }
+        .floating-note, .spark { display: none; }
+        .tool { margin-bottom: 45px; border-radius: 14px; }
+        .tool-head { align-items: flex-start; flex-direction: column; padding: 22px 19px 18px; gap: 18px; }
+        .recipe-types { width: 100%; }
+        .recipe-type { flex: 1; padding-inline: 5px; }
+        .picker-top { padding: 19px 19px 12px; }
+        .search { width: min(170px, 45vw); }
+        .ingredient-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; padding: 0 19px 20px; }
+        .ingredient-card { min-height: 76px; gap: 8px; padding: 10px; }
+        .ingredient-icon { flex-basis: 33px; width: 33px; height: 33px; font-size: 16px; }
+        .ingredient-name { font-size: 11px; }
+        .ingredient-allergen { font-size: 9px; }
+        .results { padding: 22px 16px 22px; }
+        .results-head { align-items: flex-start; flex-direction: column; gap: 14px; }
+        .swap-group { padding: 13px; }
+        .swap-group-head { align-items: flex-start; flex-direction: column; gap: 12px; }
+        .original-amount { width: 100%; }
+        .alt-grid { grid-template-columns: 1fr; }
+        .alt-card { padding: 12px; }
+        .alt-note { min-height: 0; }
+        .how-it-works { grid-template-columns: 1fr; gap: 20px; padding-bottom: 42px; }
+        .footer-inner { flex-direction: column; gap: 12px; padding: 22px 0; }
+      }
+
+      @media (min-width: 761px) and (max-width: 980px) {
+        .hero { gap: 25px; grid-template-columns: minmax(0, 1fr) 260px; }
+        .ingredient-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+        .alt-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="shell topbar">
+      <a class="brand" href="#" aria-label="Safe Swap home">
+        <span class="brand-mark" aria-hidden="true">
+          <svg width="23" height="23" viewBox="0 0 24 24" fill="none">
+            <path d="M19.5 4.5c-6.7.2-11.3 2.4-12.8 6.4-1.1 3 .3 6.2 3.2 6.8 2.2.5 4.7-.7 5.7-3.1 1-2.4.3-5.3-2.1-7.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+            <path d="M5 20c1.2-4.1 3.5-6.9 7-8.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <span class="brand-name">safe <span>swap</span></span>
+      </a>
+      <div class="top-note">A little more care, in every recipe.</div>
+    </header>
+
+    <main>
+      <section class="shell hero" aria-labelledby="hero-title">
+        <div>
+          <div class="eyebrow">Good food makes room</div>
+          <h1 id="hero-title">Keep the heart of the recipe. <em>Swap with care.</em></h1>
+          <p class="hero-copy">Find thoughtful ingredient alternatives shaped around what you're making — and who's coming to the table. Compare the trade-offs, tune the amounts, and make something everyone can enjoy.</p>
+        </div>
+        <div class="hero-art" aria-hidden="true">
+          <span class="spark one">✳</span><span class="spark two">✳</span>
+          <div class="plate"><div class="plate-center">made with care</div></div>
+          <div class="floating-note">A good swap, thoughtfully chosen<small>for this recipe &amp; this table</small></div>
+        </div>
+      </section>
+
+      <section class="shell tool" aria-label="Ingredient swap finder">
+        <div class="tool-head">
+          <div class="step-title">
+            <span class="step-number">1</span>
+            <div><h2>What are you making?</h2><p>Choose the recipe style for more fitting suggestions.</p></div>
+          </div>
+          <div class="recipe-types" role="group" aria-label="Recipe style">
+            <button class="recipe-type" type="button" data-recipe="savory" aria-pressed="false">Savory</button>
+            <button class="recipe-type" type="button" data-recipe="sweet" aria-pressed="true">Sweet</button>
+            <button class="recipe-type" type="button" data-recipe="beverage" aria-pressed="false">Beverage</button>
+          </div>
+        </div>
+        <div class="picker-top">
+          <div class="picker-label">Pick ingredients to swap</div>
+          <label class="search-wrap">
+            <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="8.8" cy="8.8" r="5.8" stroke="currentColor" stroke-width="1.5"/><path d="m13.2 13.2 4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            <input id="ingredient-search" class="search" type="search" placeholder="Find an ingredient" aria-label="Search ingredients">
+          </label>
+        </div>
+        <div id="ingredient-grid" class="ingredient-grid" role="group" aria-label="Common recipe ingredients"></div>
+        <div class="results">
+          <div class="results-head">
+            <div class="results-heading">
+              <span class="step-number">2</span>
+              <div><h2>Your thoughtful swaps</h2><p id="results-caption">Options are ranked for your recipe style.</p></div>
+            </div>
+            <div class="measure-control">
+              <span>Measure in</span>
+              <div class="measure-toggle" role="group" aria-label="Measurement system">
+                <button type="button" data-system="imperial" aria-pressed="true">Imperial</button>
+                <button type="button" data-system="metric" aria-pressed="false">Metric</button>
+              </div>
+            </div>
+          </div>
+          <div id="swap-list" class="swap-list" aria-live="polite"></div>
+        </div>
+      </section>
+
+      <section class="shell how-it-works" aria-label="How Safe Swap works">
+        <article class="how-item"><span class="how-number">01</span><div><h3>Start with your recipe</h3><p>Sweet, savory, or something to sip — context helps narrow down the best fit.</p></div></article>
+        <article class="how-item"><span class="how-number">02</span><div><h3>Compare the trade-offs</h3><p>See what each swap brings to flavor and texture, plus notes worth checking.</p></div></article>
+        <article class="how-item"><span class="how-number">03</span><div><h3>Adjust your amount</h3><p>Change the original quantity and switch units to scale each replacement.</p></div></article>
+      </section>
+    </main>
+
+    <footer>
+      <div class="shell footer-inner">
+        <div class="footer-brand">safe <span>swap</span></div>
+        <p class="disclaimer"><strong>A note about food allergies:</strong> These suggestions are a starting point, not a guarantee of safety. Ingredients, manufacturing, and cross-contact risks vary by product and kitchen. Always read the current package label, check with the person who has the allergy (or their caregiver), and verify that every ingredient and preparation surface is safe before sharing food. When in doubt, don't serve it.</p>
+        <div class="footer-credit">Made with care.</div>
+      </div>
+    </footer>
+
+    <script>
+      const ingredients = [
+        {
+          id: "milk", name: "Cow's milk", icon: "🥛", allergen: "Contains dairy",
+          units: { imperial: "cup", metric: "ml" }, initialAmount: 1,
+          alternatives: [
+            { name: "Unsweetened oat drink", categories: ["sweet", "beverage"], ratio: { imperial: 1, metric: 1 }, note: "Mild, creamy, and easy to find.", pros: "Blends smoothly; neutral flavor.", cons: "Can be thinner in rich custards.", caution: "Some oat drinks contain gluten; check the label." },
+            { name: "Unsweetened soy drink", categories: ["savory", "sweet", "beverage"], ratio: { imperial: 1, metric: 1 }, note: "A versatile, protein-rich stand-in.", pros: "Closest body for many sauces.", cons: "A faint bean note can come through.", caution: "Contains soy, a major allergen." },
+            { name: "Unsweetened rice drink", categories: ["sweet", "beverage"], ratio: { imperial: 1, metric: 1 }, note: "Light and naturally a little sweet.", pros: "Very gentle flavor.", cons: "Watery; less structure in baking.", caution: "Check for shared-equipment statements and added ingredients." },
+            { name: "Unsweetened coconut drink", categories: ["savory", "sweet", "beverage"], ratio: { imperial: 1, metric: 1 }, note: "Adds a subtle tropical note.", pros: "Creamy in curries and smoothies.", cons: "Distinct flavor may change the dish.", caution: "Coconut can be an allergen for some people; verify their specific needs." }
+          ]
+        },
+        {
+          id: "butter", name: "Butter", icon: "🧈", allergen: "Contains dairy",
+          units: { imperial: "tbsp", metric: "g" }, initialAmount: 4,
+          alternatives: [
+            { name: "Plant-based butter sticks", categories: ["sweet", "savory"], ratio: { imperial: 1, metric: 1 }, note: "Choose a firm baking stick for cookies and pastry.", pros: "Closest behavior and richness.", cons: "Salt levels vary by brand.", caution: "Check for soy, pea protein, or other allergens on the label." },
+            { name: "Neutral oil", categories: ["sweet", "savory"], ratio: { imperial: 0.75, metric: 0.75 }, note: "Use about ¾ as much; best in moist bakes and sautés.", pros: "Keeps cakes tender; dairy-free.", cons: "No buttery flavor; not ideal for creaming.", caution: "Check the specific oil and facility statement for the person's allergens." },
+            { name: "Extra-virgin olive oil", categories: ["savory"], ratio: { imperial: 0.75, metric: 0.75 }, note: "A lovely fit for dressings, vegetables, and rustic breads.", pros: "Adds savory depth.", cons: "Its flavor can overwhelm delicate dishes.", caution: "Verify the bottle label and any flavoring or infused ingredients." },
+            { name: "Refined coconut oil", categories: ["sweet"], ratio: { imperial: 1, metric: 1 }, note: "Use solid for pastry; refined versions taste milder.", pros: "Firm texture for some bakes.", cons: "Can feel waxy; melting point differs.", caution: "Coconut can be an allergen for some people; verify their specific needs." }
+          ]
+        },
+        {
+          id: "egg", name: "Eggs", icon: "🥚", allergen: "Contains egg",
+          units: { imperial: "each", metric: "each" }, initialAmount: 1,
+          alternatives: [
+            { name: "Flax egg", categories: ["sweet", "savory"], note: "For each egg: mix 1 tbsp ground flaxseed with 3 tbsp water; rest until gelled.", prep: [
+                { imperialFactor: 1, metricFactor: 7, imperialUnit: "tbsp", metricUnit: "g", label: "ground flaxseed" },
+                { imperialFactor: 3, metricFactor: 45, imperialUnit: "tbsp", metricUnit: "ml", label: "water" }
+              ], pros: "Helps bind muffins, pancakes, and patties.", cons: "Adds a little nuttiness; not for airy cakes.", caution: "Flax is a seed; confirm it is safe for the person." },
+            { name: "Unsweetened applesauce", categories: ["sweet"], note: "Use ¼ cup (60 ml) per egg in moist cakes and muffins.", prep: [
+                { imperialFactor: 0.25, metricFactor: 60, imperialUnit: "cup", metricUnit: "ml", label: "applesauce" }
+              ], pros: "Adds moisture and gentle sweetness.", cons: "Can make bakes denser; not a crisp binder.", caution: "Check for added ingredients and shared-equipment notices." },
+            { name: "Commercial egg replacer", categories: ["sweet", "savory"], note: "Follow the package ratio; performance varies by recipe.", amountNote: "Use the package directions for this many eggs.", pros: "Often designed for baking structure.", cons: "Brand-specific and may include several ingredients.", caution: "Read the full ingredient and allergen statement every time." }
+          ]
+        },
+        {
+          id: "flour", name: "Wheat flour", icon: "🌾", allergen: "Contains wheat / gluten",
+          units: { imperial: "cup", metric: "g" }, initialAmount: 1,
+          alternatives: [
+            { name: "1:1 gluten-free flour blend", categories: ["sweet", "savory"], ratio: { imperial: 1, metric: 1 }, note: "Choose a blend labeled for 1:1 substitution; use its package guidance.", pros: "Designed to mimic all-purpose flour.", cons: "Texture and absorption vary between brands.", caution: "Look for a gluten-free claim and check for other allergens or cross-contact." },
+            { name: "Oat flour", categories: ["sweet"], ratio: { imperial: 1, metric: 0.9 }, note: "A soft, hearty option for pancakes and quick breads.", pros: "Mild flavor; tender crumb.", cons: "Can be more crumbly than wheat flour.", caution: "Use oats specifically labeled gluten-free when needed; check cross-contact." },
+            { name: "Almond flour", categories: ["sweet"], ratio: { imperial: 1.25, metric: 0.8 }, note: "Approximate starting point: 1¼ cups or 80 g per cup / 100 g wheat flour; expect recipe testing.", pros: "Moist, rich crumb in some cakes and cookies.", cons: "Not a direct swap for bread or chewy dough.", caution: "Contains tree nuts, a major allergen." },
+            { name: "Certified gluten-free buckwheat flour", categories: ["savory"], ratio: { imperial: 1, metric: 0.9 }, note: "Earthy and especially good in pancakes and savory batters.", pros: "Distinctive flavor; naturally wheat-free.", cons: "Can be dense and strongly flavored.", caution: "Despite its name, buckwheat is not wheat; still check packaging and cross-contact." }
+          ]
+        },
+        {
+          id: "soy-sauce", name: "Soy sauce", icon: "🫙", allergen: "Contains soy; often wheat",
+          units: { imperial: "tbsp", metric: "ml" }, initialAmount: 2,
+          alternatives: [
+            { name: "Coconut aminos", categories: ["savory"], ratio: { imperial: 1, metric: 1 }, note: "Start 1:1, then adjust; usually milder and sweeter.", pros: "Savory, usually wheat-free.", cons: "Less salty; flavor is not identical.", caution: "Coconut can be an allergen for some people; check the label." },
+            { name: "Wheat-free tamari", categories: ["savory"], ratio: { imperial: 1, metric: 1 }, note: "Use 1:1 for a close, savory flavor.", pros: "Rich umami; close to soy sauce.", cons: "Salt levels vary; not all tamari is wheat-free.", caution: "Usually contains soy. Verify both soy and wheat statements on the exact bottle." },
+            { name: "Low-sodium broth + salt", categories: ["savory"], note: "Replace each tbsp with 1 tbsp broth, then season gradually to taste.", prep: [
+                { imperialFactor: 1, metricFactor: 15, imperialUnit: "tbsp", metricUnit: "ml", label: "low-sodium broth" }
+              ], pros: "Keeps dishes savory without soy.", cons: "Less concentrated umami; salt needs adjustment.", caution: "Check broth for allergens, including celery, soy, and wheat." }
+          ]
+        },
+        {
+          id: "sugar", name: "Granulated sugar", icon: "🍚", allergen: "Check processing & packaging",
+          units: { imperial: "cup", metric: "ml" }, initialAmount: 1,
+          alternatives: [
+            { name: "Maple syrup", categories: ["sweet", "beverage"], ratio: { imperial: 0.75, metric: 0.75 }, note: "Use ¾ as much; reduce other liquid by about ¼ cup per cup of sugar.", pros: "Adds a rounded caramel note.", cons: "Changes moisture and browning.", caution: "Choose pure maple syrup and check for added flavors or shared-equipment notes." },
+            { name: "Date syrup", categories: ["sweet", "beverage"], ratio: { imperial: 0.75, metric: 0.75 }, note: "Start with ¾ as much and account for extra moisture.", pros: "Deep, fruity sweetness.", cons: "Darkens flavor and color.", caution: "Check the full label for added ingredients and cross-contact statements." },
+            { name: "Cane sugar", categories: ["sweet", "beverage", "savory"], ratio: { imperial: 1, metric: 1 }, note: "A straightforward 1:1 choice for most uses.", pros: "Familiar sweetness and texture.", cons: "Less refined flavor may show in delicate recipes.", caution: "Processing practices vary; check the brand if refining aids are a concern." }
+          ]
+        },
+        {
+          id: "peanut-butter", name: "Peanut butter", icon: "🥜", allergen: "Contains peanuts",
+          units: { imperial: "tbsp", metric: "g" }, initialAmount: 2,
+          alternatives: [
+            { name: "Sunflower seed butter", categories: ["sweet", "savory"], ratio: { imperial: 1, metric: 1 }, note: "Use 1:1 in sauces, spreads, and many cookies.", pros: "Creamy with a mild, toasty taste.", cons: "Can taste more earthy; may turn green with baking soda.", caution: "Check for seed allergies and shared equipment with peanuts or tree nuts." },
+            { name: "Tahini", categories: ["savory"], ratio: { imperial: 1, metric: 1 }, note: "Use 1:1 in dressings, sauces, and dips.", pros: "Silky texture and savory depth.", cons: "Bitter edge may need balancing.", caution: "Contains sesame, a major allergen." },
+            { name: "Soy nut butter", categories: ["sweet", "savory"], ratio: { imperial: 1, metric: 1 }, note: "Use 1:1 in cookies, sauces, and spreads.", pros: "Similar creamy body.", cons: "Flavor and salt vary by brand.", caution: "Contains soy, a major allergen." }
+          ]
+        },
+        {
+          id: "cream", name: "Heavy cream", icon: "🍶", allergen: "Contains dairy",
+          units: { imperial: "cup", metric: "ml" }, initialAmount: 0.5,
+          alternatives: [
+            { name: "Full-fat oat cooking cream", categories: ["savory", "sweet", "beverage"], ratio: { imperial: 1, metric: 1 }, note: "Choose an unsweetened cooking style for soups and sauces.", pros: "Creamy body with a mild flavor.", cons: "May not whip or reduce like dairy cream.", caution: "Some oat products contain gluten; check label and cross-contact." },
+            { name: "Full-fat coconut milk", categories: ["savory", "sweet"], ratio: { imperial: 1, metric: 1 }, note: "Use the thick part for sauces and curries.", pros: "Rich texture and stable in simmered dishes.", cons: "Noticeable coconut flavor.", caution: "Coconut can be an allergen for some people; verify their specific needs." },
+            { name: "Unsweetened soy cooking cream", categories: ["savory", "sweet"], ratio: { imperial: 1, metric: 1 }, note: "A useful creamy option for soups and sauces.", pros: "Neutral enough for many savory dishes.", cons: "May separate in acidic sauces.", caution: "Contains soy, a major allergen." }
+          ]
+        }
+      ];
+
+      const state = {
+        recipe: "sweet",
+        system: "imperial",
+        selected: new Set(["milk", "egg", "flour"]),
+        amounts: Object.fromEntries(ingredients.map(item => [item.id, item.initialAmount]))
+      };
+      const ingredientGrid = document.querySelector("#ingredient-grid");
+      const swapList = document.querySelector("#swap-list");
+      const search = document.querySelector("#ingredient-search");
+
+      function escapeHTML(value) {
+        return String(value).replace(/[&<>"']/g, character => ({
+          "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+        })[character]);
+      }
+
+      function amountText(value) {
+        if (!Number.isFinite(value)) return "0";
+        return String(Number(value.toFixed(2)));
+      }
+
+      function pluralUnit(unit, value) {
+        if (unit === "g" || unit === "ml" || unit === "each") return unit;
+        return Math.abs(value - 1) < 0.001 ? unit : `${unit}s`;
+      }
+
+      function renderIngredients() {
+        const query = search.value.trim().toLowerCase();
+        const visible = ingredients.filter(item => `${item.name} ${item.allergen}`.toLowerCase().includes(query));
+        ingredientGrid.innerHTML = visible.map(item => {
+          const pressed = state.selected.has(item.id);
+          return `<button class="ingredient-card" type="button" data-ingredient="${item.id}" aria-pressed="${pressed}">
+            <span class="ingredient-icon" aria-hidden="true">${item.icon}</span>
+            <span class="ingredient-info"><span class="ingredient-name">${escapeHTML(item.name)}</span><span class="ingredient-allergen">${escapeHTML(item.allergen)}</span></span>
+            <span class="check" aria-hidden="true">✓</span>
+          </button>`;
+        }).join("");
+      }
+
+      function renderAmount(alt, ingredient, amount) {
+        if (alt.amountNote) {
+          return `<div class="alt-amount">${escapeHTML(alt.amountNote.replace("this many", amountText(amount)))}<br><small>${escapeHTML(pluralUnit("each", amount))} ${escapeHTML(ingredient.name.toLowerCase())}</small></div>`;
+        }
+        if (alt.prep) {
+          const parts = alt.prep.map(part => {
+            const factor = state.system === "metric" ? part.metricFactor : part.imperialFactor;
+            const unit = state.system === "metric" ? part.metricUnit : part.imperialUnit;
+            const value = amount * factor;
+            return `${amountText(value)} ${pluralUnit(unit, value)} ${escapeHTML(part.label)}`;
+          });
+          return `<div class="alt-amount">${parts.join(" + ")}<br><small>for ${amountText(amount)} ${pluralUnit("each", amount)} ${escapeHTML(ingredient.name.toLowerCase())}</small></div>`;
+        }
+        const ratio = alt.ratio[state.system];
+        const value = amount * ratio;
+        const unit = ingredient.units[state.system];
+        const ratioLabel = Math.abs(ratio - 1) < 0.001 ? "same measure" : `${amountText(ratio)}× per ${escapeHTML(unit)}`;
+        return `<div class="alt-amount"><span class="calculated-amount">${amountText(value)}</span> <span>${escapeHTML(pluralUnit(unit, value))}</span><br><small>${ratioLabel}</small></div>`;
+      }
+
+      function renderSwaps() {
+        const selected = ingredients.filter(item => state.selected.has(item.id));
+        document.querySelector("#results-caption").textContent =
+          `Options are ranked for ${state.recipe === "beverage" ? "beverages" : `${state.recipe} recipes`}.`;
+
+        if (!selected.length) {
+          swapList.innerHTML = `<div class="no-results">Choose an ingredient above to see thoughtful alternatives.</div>`;
+          return;
+        }
+
+        swapList.innerHTML = selected.map(ingredient => {
+          const amount = state.amounts[ingredient.id] ?? ingredient.initialAmount;
+          const alternatives = ingredient.alternatives
+            .filter(alt => alt.categories.includes(state.recipe))
+            .sort((a, b) => a.categories.indexOf(state.recipe) - b.categories.indexOf(state.recipe));
+          const altMarkup = alternatives.length ? alternatives.map((alt, index) => `
+            <article class="alt-card ${index === 0 ? "best" : ""}">
+              <div class="alt-top"><h4>${escapeHTML(alt.name)}</h4>${index === 0 ? '<span class="fit-tag">Best fit</span>' : ""}</div>
+              ${renderAmount(alt, ingredient, amount)}
+              <p class="alt-note">${escapeHTML(alt.note)}</p>
+              <div class="tradeoffs">
+                <div class="tradeoff"><b>Good:</b><span>${escapeHTML(alt.pros)}</span></div>
+                <div class="tradeoff cons"><b>Consider:</b><span>${escapeHTML(alt.cons)}</span></div>
+              </div>
+              <div class="allergen-note"><strong>Check:</strong><span>${escapeHTML(alt.caution)}</span></div>
+            </article>`).join("") : `<div class="no-results">No ${escapeHTML(state.recipe)} swaps in this starter set yet.</div>`;
+
+          return `<section class="swap-group" data-swap-group="${ingredient.id}">
+            <div class="swap-group-head">
+              <div class="swap-ingredient"><span class="ingredient-icon" aria-hidden="true">${ingredient.icon}</span><div><h3>${escapeHTML(ingredient.name)}</h3><p>${escapeHTML(ingredient.allergen)}</p></div></div>
+              <label class="original-amount">Original amount
+                <input class="amount-input" type="number" min="0" step="any" inputmode="decimal" value="${escapeHTML(amount)}" data-amount="${ingredient.id}" aria-label="Original amount of ${escapeHTML(ingredient.name)}">
+                <span class="amount-unit">${escapeHTML(pluralUnit(ingredient.units[state.system], amount))}</span>
+              </label>
+            </div>
+            <div class="alt-grid">${altMarkup}</div>
+          </section>`;
+        }).join("");
+      }
+
+      document.querySelector(".recipe-types").addEventListener("click", event => {
+        const button = event.target.closest("[data-recipe]");
+        if (!button) return;
+        state.recipe = button.dataset.recipe;
+        document.querySelectorAll("[data-recipe]").forEach(item => item.setAttribute("aria-pressed", String(item === button)));
+        renderSwaps();
+      });
+
+      ingredientGrid.addEventListener("click", event => {
+        const button = event.target.closest("[data-ingredient]");
+        if (!button) return;
+        const id = button.dataset.ingredient;
+        if (state.selected.has(id)) state.selected.delete(id);
+        else state.selected.add(id);
+        renderIngredients();
+        renderSwaps();
+      });
+
+      document.querySelector(".measure-toggle").addEventListener("click", event => {
+        const button = event.target.closest("[data-system]");
+        if (!button) return;
+        state.system = button.dataset.system;
+        document.querySelectorAll("[data-system]").forEach(item => item.setAttribute("aria-pressed", String(item === button)));
+        renderSwaps();
+      });
+
+      swapList.addEventListener("input", event => {
+        const input = event.target.closest("[data-amount]");
+        if (!input) return;
+        const amount = Math.max(0, Number(input.value) || 0);
+        const id = input.dataset.amount;
+        state.amounts[id] = amount;
+        const ingredient = ingredients.find(item => item.id === id);
+        const group = input.closest("[data-swap-group]");
+        group.querySelectorAll(".alt-card").forEach((card, index) => {
+          const alt = ingredient.alternatives.filter(item => item.categories.includes(state.recipe))
+            .sort((a, b) => a.categories.indexOf(state.recipe) - b.categories.indexOf(state.recipe))[index];
+          if (alt) card.querySelector(".alt-amount").outerHTML = renderAmount(alt, ingredient, amount);
+        });
+        group.querySelector(".amount-unit").textContent = pluralUnit(ingredient.units[state.system], amount);
+      });
+
+      search.addEventListener("input", renderIngredients);
+      renderIngredients();
+      renderSwaps();
+    </script>
+  </body>
+</html>
